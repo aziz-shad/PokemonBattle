@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useAuthContext } from "@/contexts";
+
 import { Link } from "react-router";
 
 const PokemonCard = ({ name, url }: Pokemon) => {
@@ -17,13 +19,41 @@ const PokemonCard = ({ name, url }: Pokemon) => {
     };
     fetchPokemon();
   }, []);
+  const { user } = useAuthContext();
 
-  const addToTeam = () => {
-    //Will call an api to add this pokemon team, but need to check it should not alread be in team
-    alert(
-      `Provide functionality to this Button to make this pokemon ${id} a team member.`
-    );
+  const addToTeam = async () => {
+    if (!user) {
+      alert("You must log in to add Pokémon to your team!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/api/pokemon/store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          id,
+          name,
+          type,
+          image,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Failed to add Pokémon");
+        return;
+      }
+
+      alert(`✅ ${name} added to your team!`);
+    } catch (error) {
+      console.error("Error adding to team:", error);
+      alert("Error adding Pokémon to team.");
+    }
   };
+
   return (
     <div className="card bg-base-100 shadow-xl">
       <figure className="bg-white h-48">

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { useAuthContext } from "@/contexts";
 
 type Move = {
   name: string;
@@ -20,65 +21,6 @@ type Pokemon = {
   moves: Move[];
 };
 
-// ---- Pokémon Data (same as before) ----
-const POKEMON_LIST: Pokemon[] = [
-  {
-    id: 25,
-    name: "Pikachu",
-    hp: 35,
-    maxHp: 35,
-    attack: 55,
-    defense: 40,
-    speed: 90,
-    type: "Electric",
-    sprite:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png",
-    moves: [
-      { name: "Thunderbolt", power: 90, type: "Electric" },
-      { name: "Quick Attack", power: 40, type: "Normal" },
-      { name: "Iron Tail", power: 75, type: "Steel" },
-      { name: "Electro Ball", power: 80, type: "Electric" },
-    ],
-  },
-  {
-    id: 1,
-    name: "Bulbasaur",
-    hp: 45,
-    maxHp: 45,
-    attack: 49,
-    defense: 49,
-    speed: 45,
-    type: "Grass",
-    sprite:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png",
-    moves: [
-      { name: "Vine Whip", power: 45, type: "Grass" },
-      { name: "Tackle", power: 40, type: "Normal" },
-      { name: "Razor Leaf", power: 55, type: "Grass" },
-      { name: "Sludge Bomb", power: 65, type: "Poison" },
-    ],
-  },
-  {
-    id: 4,
-    name: "Charmander",
-    hp: 39,
-    maxHp: 39,
-    attack: 52,
-    defense: 43,
-    speed: 65,
-    type: "Fire",
-    sprite:
-      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png",
-    moves: [
-      { name: "Flamethrower", power: 90, type: "Fire" },
-      { name: "Scratch", power: 40, type: "Normal" },
-      { name: "Ember", power: 60, type: "Fire" },
-      { name: "Slash", power: 70, type: "Normal" },
-    ],
-  },
-];
-
-// ---- Utility ----
 const typeEffectiveness = (
   attackType: string,
   defenderType: string
@@ -92,7 +34,6 @@ const typeEffectiveness = (
   return chart[attackType]?.[defenderType] ?? 1;
 };
 
-// ---- Sound helper ----
 const playSound = (url: string) => {
   const audio = new Audio(url);
   audio.volume = 0.5;
@@ -100,6 +41,8 @@ const playSound = (url: string) => {
 };
 
 const PokemonBattle2: React.FC = () => {
+  const { user } = useAuthContext();
+  const [userPokemon, setUserPokemon] = useState<Pokemon[]>([]);
   const [player, setPlayer] = useState<Pokemon | null>(null);
   const [enemy, setEnemy] = useState<Pokemon | null>(null);
   const [log, setLog] = useState<string[]>([]);
@@ -108,48 +51,52 @@ const PokemonBattle2: React.FC = () => {
   const [battleOver, setBattleOver] = useState(false);
   const [scores, setScores] = useState<Record<string, number>>({});
 
-  // ---- Load saved state ----
+  // ---- Fetch user Pokémon ----
   useEffect(() => {
-    const savedPokemon = localStorage.getItem("selectedPokemon");
-    const savedScores = localStorage.getItem("pokemonScores");
-
-    if (savedScores) setScores(JSON.parse(savedScores));
-
-    if (savedPokemon) {
-      const p = POKEMON_LIST.find((x) => x.name === savedPokemon);
-      if (p) {
-        setPlayer({ ...p });
-        const enemy = POKEMON_LIST.filter((x) => x.name !== p.name);
-        const randomEnemy = enemy[Math.floor(Math.random() * enemy.length)];
-        setEnemy({ ...randomEnemy });
-        setMessage(`A wild ${randomEnemy.name} appeared!`);
+    if (!user?.id) return;
+    const fetchPokemon = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8000/api/pokemon/${user.id}`,
+          {
+            credentials: "include",
+          }
+        );
+        if (!res.ok) throw new Error("Failed to fetch Pokémon");
+        const data: Pokemon[] = await res.json();
+        setUserPokemon(data);
+      } catch (err) {
+        console.error(err);
+        setUserPokemon([]);
       }
-    }
+    };
+    fetchPokemon();
+  }, [user]);
+
+  // ---- Load saved scores ----
+  useEffect(() => {
+    const savedScores = localStorage.getItem("pokemonScores");
+    if (savedScores) setScores(JSON.parse(savedScores));
   }, []);
 
-  // ---- Save scores persistently ----
   useEffect(() => {
     localStorage.setItem("pokemonScores", JSON.stringify(scores));
   }, [scores]);
 
+  // ---- Choose player Pokémon ----
   const handleChoosePokemon = (chosen: Pokemon) => {
-    const enemies = POKEMON_LIST.filter((p) => p.name !== chosen.name);
+    const enemies = userPokemon.filter((p) => p.id !== chosen.id);
     const randomEnemy = enemies[Math.floor(Math.random() * enemies.length)];
     setPlayer({ ...chosen });
-    setEnemy({ ...randomEnemy });
+    setEnemy(randomEnemy ? { ...randomEnemy } : null);
     setMessage(
-      `You chose ${chosen.name}! A wild ${randomEnemy.name} appeared!`
+      `You chose ${chosen.name}! A wild ${randomEnemy?.name || "???"} appeared!`
     );
-    localStorage.setItem("selectedPokemon", chosen.name);
     playSound("/sounds/start.mp3");
   };
 
   // ---- Battle Logic ----
-  const calcDamage = (
-    attacker: Pokemon,
-    defender: Pokemon,
-    move: Move
-  ): number => {
+  const calcDamage = (attacker: Pokemon, defender: Pokemon, move: Move) => {
     let baseDamage = move.power + attacker.attack - defender.defense;
     baseDamage = Math.max(baseDamage, 1);
     const eff = typeEffectiveness(move.type, defender.type);
@@ -163,7 +110,6 @@ const PokemonBattle2: React.FC = () => {
     move: Move
   ) => {
     if (battleOver) return;
-
     setAttacking(attacker.name);
     playSound("/sounds/attack.mp3");
     setTimeout(() => setAttacking(null), 400);
@@ -181,18 +127,12 @@ const PokemonBattle2: React.FC = () => {
     setLog((prev) => [text, ...prev]);
     setMessage(text);
 
-    // ---- Check Winner ----
     if (newHP <= 0) {
       playSound("/sounds/faint.mp3");
       const winner = attacker.name;
       setMessage(`${defender.name} fainted! ${winner} wins!`);
       setBattleOver(true);
-
-      // ✅ Update Score
-      setScores((prev) => ({
-        ...prev,
-        [winner]: (prev[winner] || 0) + 1,
-      }));
+      setScores((prev) => ({ ...prev, [winner]: (prev[winner] || 0) + 1 }));
     }
   };
 
@@ -249,10 +189,9 @@ const PokemonBattle2: React.FC = () => {
     transition: { duration: 0.4, ease: "easeInOut" },
   });
 
-  // ---- Leaderboard sorted descending ----
   const sortedScores = Object.entries(scores)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5); // top 5
+    .slice(0, 5);
 
   // ---- Pokémon selection ----
   if (!player || !enemy) {
@@ -260,23 +199,27 @@ const PokemonBattle2: React.FC = () => {
       <div className="p-6 flex flex-col items-center gap-6 min-h-screen bg-gradient-to-br from-blue-100 to-yellow-100">
         <h1 className="text-3xl font-bold">⚡ Choose Your Pokémon ⚔️</h1>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {POKEMON_LIST.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => handleChoosePokemon(p)}
-              className="bg-white shadow-lg rounded-2xl p-4 hover:shadow-xl transition text-center"
-            >
-              <img src={p.sprite} alt={p.name} className="w-24 mx-auto" />
-              <p className="font-semibold mt-2">{p.name}</p>
-              <p className="text-sm text-gray-500">{p.type}</p>
-            </button>
-          ))}
+          {userPokemon.length === 0 ? (
+            <p>Loading your Pokémon...</p>
+          ) : (
+            userPokemon.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => handleChoosePokemon(p)}
+                className="bg-white shadow-lg rounded-2xl p-4 hover:shadow-xl transition text-center"
+              >
+                <img src={p.sprite} alt={p.name} className="w-24 mx-auto" />
+                <p className="font-semibold mt-2">{p.name}</p>
+                <p className="text-sm text-gray-500">{p.type}</p>
+              </button>
+            ))
+          )}
         </div>
       </div>
     );
   }
 
-  // ---- Battle screen with leaderboard ----
+  // ---- Battle screen ----
   return (
     <div className="flex flex-col sm:flex-row gap-6 p-6 min-h-screen bg-gradient-to-br from-blue-100 to-yellow-100">
       {/* Left: Battle Arena */}
@@ -286,7 +229,6 @@ const PokemonBattle2: React.FC = () => {
 
         {/* Pokémon Field */}
         <div className="flex justify-between w-full max-w-3xl mt-4">
-          {/* Player */}
           <motion.div
             animate={attackAnimation(player.name)}
             className="flex flex-col items-center"
@@ -301,7 +243,6 @@ const PokemonBattle2: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Enemy */}
           <motion.div
             animate={attackAnimation(enemy.name)}
             className="flex flex-col items-center"
