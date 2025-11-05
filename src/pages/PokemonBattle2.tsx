@@ -278,43 +278,73 @@ const PokemonBattle2: React.FC = () => {
 
   // ---- Battle screen with leaderboard ----
   return (
-    <div className="flex flex-col sm:flex-row gap-6 p-6 min-h-screen bg-gradient-to-br from-blue-100 to-yellow-100">
+    <div className="flex flex-col sm:flex-row gap-6 p-6 min-h-screen  text-white">
       {/* Left: Battle Arena */}
       <div className="flex-1 flex flex-col items-center">
         <h1 className="text-3xl font-bold mb-2">⚡ Pokémon Battle ⚔️</h1>
-        <p className="text-gray-600 mb-4 text-center">{message}</p>
+        <p className="text-white mb-4 text-center">{message}</p>
 
         {/* Pokémon Field */}
         <div className="flex justify-between w-full max-w-3xl mt-4">
           {/* Player */}
           <motion.div
-            animate={attackAnimation(player.name)}
-            className="flex flex-col items-center"
-          >
-            <img src={player.sprite} alt={player.name} className="w-28" />
-            <div className="text-center mt-2 bg-white shadow p-2 rounded-xl w-40">
-              <p className="font-semibold">{player.name}</p>
-              <p className="text-sm text-gray-600">
-                HP: {player.hp}/{player.maxHp}
-              </p>
-              <HpBar hp={player.hp} maxHp={player.maxHp} />
-            </div>
-          </motion.div>
+  animate={attackAnimation(player.name)}
+  className="flex flex-col items-center"
+>
+  <img src={player.sprite} alt={player.name} className="w-28" />
 
+  <div
+    className="text-center mt-2 p-3 w-80"
+    style={{
+      borderRadius: '24px',
+      borderWidth: '2px',
+      borderColor: '#FFFFFF',          
+      background: 'linear-gradient(145deg, #2E2E2E, #1C1C1C)', 
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5), inset 0 0 8px rgba(255, 215, 0, 0.5)', 
+      color: '#FFFFFF',
+      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+    }}
+  >
+    <p className="font-bold text-lg mb-1">{player.name}</p>
+    <p className="text-sm mb-2">
+      HP: {player.hp}/{player.maxHp}
+    </p>
+    <div className="m-1" >
+      <HpBar hp={player.hp} maxHp={player.maxHp} />
+    </div>
+  </div>
+</motion.div>
+
+          
           {/* Enemy */}
-          <motion.div
-            animate={attackAnimation(enemy.name)}
-            className="flex flex-col items-center"
-          >
-            <img src={enemy.sprite} alt={enemy.name} className="w-28" />
-            <div className="text-center mt-2 bg-white shadow p-2 rounded-xl w-40">
-              <p className="font-semibold">{enemy.name}</p>
-              <p className="text-sm text-gray-600">
-                HP: {enemy.hp}/{enemy.maxHp}
-              </p>
-              <HpBar hp={enemy.hp} maxHp={enemy.maxHp} />
-            </div>
-          </motion.div>
+         <motion.div
+  animate={attackAnimation(enemy.name)}
+  className="flex flex-col items-center"
+>
+  <img src={enemy.sprite} alt={enemy.name} className="w-28" />
+
+  <div
+    className="text-center mt-2 p-3 w-80"
+    style={{
+      borderRadius: '24px',
+      borderWidth: '2px',
+      borderColor: '#FF0000', 
+      background: 'linear-gradient(145deg, #2A1A1A, #1C0F0F)', 
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5), inset 0 0 8px rgba(255, 69, 0, 0.5)', 
+      color: '#FFFFFF',
+      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+    }}
+  >
+    <p className="font-bold text-lg mb-1">{enemy.name}</p>
+    <p className="text-sm mb-2">
+      HP: {enemy.hp}/{enemy.maxHp}
+    </p>
+    <div className="m-1 ">
+      <HpBar hp={enemy.hp} maxHp={enemy.maxHp} />
+    </div>
+  </div>
+</motion.div>
+
         </div>
 
         {/* Moves */}
@@ -324,11 +354,20 @@ const PokemonBattle2: React.FC = () => {
               key={move.name}
               onClick={() => handlePlayerMove(move)}
               disabled={battleOver}
-              className={`px-4 py-2 rounded-xl text-white font-semibold shadow transition-all ${
+              className={`hover:brightness-100 hover:-translate-y-1 px-4 py-2 rounded-xl text-white font-semibold shadow transition-all ${
                 battleOver
                   ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-blue-600 hover:bg-blue-700"
+                  : "bg-pink-500 hover:bg-pink-700"
               }`}
+              style={{
+              borderColor: '#4EC307',
+            borderRadius: '12px',
+            borderWidth: '2px',
+            backgroundColor: '#A6F208',
+            height: '3rem',
+            boxShadow: '0 2px 2px rgba(0, 0, 0, 0.4,)',
+            textShadow: '1px 1px 5px rgba(0,0,0,0.6)',
+          }}
             >
               {move.name}
             </button>
@@ -337,7 +376,7 @@ const PokemonBattle2: React.FC = () => {
 
         <button
           onClick={resetBattle}
-          className="mt-4 px-5 py-2 rounded-xl font-semibold border border-gray-400 hover:bg-gray-100"
+          className="mt-4 px-5 py-2 rounded-xl font-semibold border-black bg-red-500 hover:bg-gray-100"
         >
           Reset Battle
         </button>
@@ -360,8 +399,9 @@ const PokemonBattle2: React.FC = () => {
       </div>
 
       {/* Right: Leaderboard */}
-      <div className="w-full sm:w-64 bg-white rounded-2xl shadow-md p-4 h-fit self-start">
-        <h3 className="text-lg font-bold mb-3 text-center">🏆 Top Pokémon</h3>
+      <div className="w-full sm:w-64 bg-white rounded-2xl shadow-md p-4 h-fit self-start mt-8">
+        <img className="scale-150" src="/public/leader-board.png" alt="" />
+        <h3 className=" m-4 text-lg font-bold mb-3 text-center text-black">🏆 Top Pokémon</h3>
         {sortedScores.length === 0 ? (
           <p className="text-center text-gray-500">No scores yet</p>
         ) : (

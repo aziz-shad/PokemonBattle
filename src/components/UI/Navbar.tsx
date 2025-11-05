@@ -10,19 +10,17 @@ const Navbar = () => {
     navigate("/");
   };
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar text-white px-6" style={{ backgroundColor: '#6F53FD' }}>
       <div className="flex-1">
-        <Link to="/" className="btn btn-ghost text-xl">
-          Pökemon Battle
-          <span role="img" aria-labelledby="airplane">
-            🛫
-          </span>
-          <span role="img" aria-labelledby="heart">
-            ❤️
-          </span>
+        <Link to="/" className="btn btn-ghost text-xl m-9 text-purple-700 font-bold">
+        <img className="max-w-40" src="/public/logo.png" alt="" />
+          
         </Link>
       </div>
-      <div className="flex-none">
+      <div className="flex-2">
+        <div>
+          
+        </div>
         <ul className="menu menu-horizontal px-1">
           <li>
             <NavLink to="/">Home</NavLink>
