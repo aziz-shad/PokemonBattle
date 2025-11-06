@@ -28,7 +28,7 @@ const Home = () => {
 
   if (loading) return <div>Loading</div>;
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 ">
+    <div className=" grid grid-cols-1 lg:grid-cols-4 gap-10 m-10  ">
       {pokemons.map((pokemon) => (
         <PokemonCard key={pokemon.name} name={pokemon.name} url={pokemon.url} />
       ))}
