@@ -10,11 +10,11 @@ const Navbar = () => {
     navigate("/");
   };
   return (
-    <div className="navbar text-white px-6" style={{ backgroundColor: '#6F53FD' }}>
-      <div className="flex-1">
-        <Link to="/" className="btn btn-ghost text-xl m-9 text-purple-700 font-bold">
-        <img className="max-w-40" src="/public/logo.png" alt="" />
-          
+    <div className="navbar px-20 p-10 " style={{ backgroundColor: "#6F53FD" }}>
+      {/* Left Section: Logo */}
+      <div className="flex items-center flex-1">
+        <Link to="/" className=" p-0">
+          <img className="max-w-40" src="/public/logo.png" alt="Logo" />
         </Link>
       </div>
       <div className="flex-2">
@@ -48,23 +48,87 @@ const Navbar = () => {
                 </span>
               </li>
 
-              <li>
-                <button className="btn btn-primary" onClick={handelLogout}>
-                  Logout
-                </button>
-              </li>
-            </>
-          ) : (
-            <>
-              <li>
-                <NavLink to="/register">Register</NavLink>
-              </li>
-              <li>
-                <NavLink to="/login">Login</NavLink>
-              </li>
-            </>
-          )}
-        </ul>
+      {/* Center Section: Navigation Links */}
+      <div className="flex-2 flex justify-center">
+  <ul className="menu menu-horizontal text-xl px-1 gap-4">
+    <li>
+      <NavLink
+        to="/"
+        className={({ isActive }) =>
+          `${isActive ? "text-yellow-300 font-semibold" : "text-white font-semibold"} px-3 py-1 rounded hover:bg-purple-700 transition-all`
+        }
+      >
+        Home
+      </NavLink>
+    </li>
+    <li>
+      <NavLink
+        to="/battle"
+        className={({ isActive }) =>
+          `${isActive ? "text-yellow-300 font-semibold" : "text-white font-semibold"} px-3 py-1 rounded hover:bg-purple-700 transition-all`
+        }
+      >
+        💥 Battle 1
+      </NavLink>
+    </li>
+    <li>
+      <NavLink
+        to="/battle2"
+        className={({ isActive }) =>
+          `${isActive ? "text-yellow-300 font-semibold" : "text-white font-semibold"} px-3 py-1 rounded hover:bg-purple-700 transition-all`
+        }
+      >
+        💥 Battle 2
+      </NavLink>
+    </li>
+    {user && (
+      <li>
+        <NavLink
+          to="/team"
+          className={({ isActive }) =>
+            `${isActive ? "text-yellow-300 font-semibold" : "text-white font-semibold"} px-3 py-1 rounded hover:bg-purple-700 transition-all`
+          }
+        >
+          Team
+        </NavLink>
+      </li>
+    )}
+  </ul>
+</div>
+
+
+      {/* Right Section: Auth */}
+      <div className="flex items-center text-xl  flex-1 justify-end gap-4">
+        {!loading && !user && (
+          <>
+            <NavLink
+              to="/register"
+              className="text-white font-semibold px-3 py-1 rounded hover:bg-purple-700 transition-all"
+            >
+              Register
+            </NavLink>
+            <NavLink
+              to="/login"
+              className="text-white font-semibold px-3 py-1 rounded hover:bg-purple-700 transition-all"
+            >
+              Login
+            </NavLink>
+          </>
+        )}
+
+        {!loading && user && (
+          <>
+            <span className="text-white opacity-80">
+              Hi, {user.firstName ? user.firstName : user.email.split("@")[0]}
+            </span>
+            <button
+              className="bg-purple-700 hover:bg-purple-800 text-white px-4 py-1 rounded transition-all"
+              onClick={handelLogout}
+            >
+              Logout
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

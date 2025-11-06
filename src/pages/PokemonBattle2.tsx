@@ -278,150 +278,143 @@ const PokemonBattle2: React.FC = () => {
 
   // ---- Battle screen with leaderboard ----
   return (
-    <div className="flex flex-col sm:flex-row gap-6 p-6 min-h-screen  text-white">
-      {/* Left: Battle Arena */}
-      <div className="flex-1 flex flex-col items-center">
-        <h1 className="text-3xl font-bold mb-2">⚡ Pokémon Battle ⚔️</h1>
-        <p className="text-white mb-4 text-center">{message}</p>
+  <div className="flex flex-col sm:flex-row gap-6 p-6 min-h-screen text-white bg-gradient-to-b ">
+    
+    {/* Left: Battle Arena */}
+    <div className="flex-1 flex flex-col items-center">
+      <h1 className="text-4xl font-bold mb-1 text-yellow-400 text-shadow-lg">⚡ Pokémon Battle ⚔️</h1>
+      <p className="text-gray-200 mb-4 text-center">{message}</p>
 
-        {/* Pokémon Field */}
-        <div className="flex justify-between w-full max-w-3xl mt-4">
-          {/* Player */}
-          <motion.div
-  animate={attackAnimation(player.name)}
-  className="flex flex-col items-center"
->
-  <img src={player.sprite} alt={player.name} className="w-28" />
-
-  <div
-    className="text-center mt-2 p-3 w-80"
-    style={{
-      borderRadius: '24px',
-      borderWidth: '2px',
-      borderColor: '#FFFFFF',          
-      background: 'linear-gradient(145deg, #2E2E2E, #1C1C1C)', 
-      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5), inset 0 0 8px rgba(255, 215, 0, 0.5)', 
-      color: '#FFFFFF',
-      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-    }}
-  >
-    <p className="font-bold text-lg mb-1">{player.name}</p>
-    <p className="text-sm mb-2">
-      HP: {player.hp}/{player.maxHp}
-    </p>
-    <div className="m-1" >
-      <HpBar hp={player.hp} maxHp={player.maxHp} />
-    </div>
-  </div>
-</motion.div>
-
-          
-          {/* Enemy */}
-         <motion.div
-  animate={attackAnimation(enemy.name)}
-  className="flex flex-col items-center"
->
-  <img src={enemy.sprite} alt={enemy.name} className="w-28" />
-
-  <div
-    className="text-center mt-2 p-3 w-80"
-    style={{
-      borderRadius: '24px',
-      borderWidth: '2px',
-      borderColor: '#FF0000', 
-      background: 'linear-gradient(145deg, #2A1A1A, #1C0F0F)', 
-      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.5), inset 0 0 8px rgba(255, 69, 0, 0.5)', 
-      color: '#FFFFFF',
-      textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
-    }}
-  >
-    <p className="font-bold text-lg mb-1">{enemy.name}</p>
-    <p className="text-sm mb-2">
-      HP: {enemy.hp}/{enemy.maxHp}
-    </p>
-    <div className="m-1 ">
-      <HpBar hp={enemy.hp} maxHp={enemy.maxHp} />
-    </div>
-  </div>
-</motion.div>
-
-        </div>
-
-        {/* Moves */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
-          {player.moves.map((move) => (
-            <button
-              key={move.name}
-              onClick={() => handlePlayerMove(move)}
-              disabled={battleOver}
-              className={`hover:brightness-100 hover:-translate-y-1 px-4 py-2 rounded-xl text-white font-semibold shadow transition-all ${
-                battleOver
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-pink-500 hover:bg-pink-700"
-              }`}
-              style={{
-              borderColor: '#4EC307',
-            borderRadius: '12px',
-            borderWidth: '2px',
-            backgroundColor: '#A6F208',
-            height: '3rem',
-            boxShadow: '0 2px 2px rgba(0, 0, 0, 0.4,)',
-            textShadow: '1px 1px 5px rgba(0,0,0,0.6)',
-          }}
-            >
-              {move.name}
-            </button>
-          ))}
-        </div>
-
-        <button
-          onClick={resetBattle}
-          className="mt-4 px-5 py-2 rounded-xl font-semibold border-black bg-red-500 hover:bg-gray-100"
-        >
-          Reset Battle
-        </button>
-
-        {/* Battle Log */}
-        <div className="mt-6 w-full max-w-3xl">
-          <h3 className="text-lg font-semibold mb-2">Battle Log</h3>
-          <div className="bg-white p-3 rounded-xl h-48 overflow-auto border shadow-sm">
-            {log.length === 0 ? (
-              <p className="text-gray-500 italic">No moves yet.</p>
-            ) : (
-              log.map((entry, i) => (
-                <p key={i} className="text-sm mb-1">
-                  {entry}
-                </p>
-              ))
-            )}
+      {/* Pokémon Field */}
+      <div className="flex justify-between w-full max-w-3xl mt-0">
+        
+        {/* Player */}
+        <motion.div animate={attackAnimation(player.name)} className="flex flex-col items-center">
+          <img src={player.sprite} alt={player.name} className="w-48 mb-2 drop-shadow-xl" />
+          <div
+            className="text-center mt-2 p-3 w-80"
+            style={{
+              borderRadius: '24px',
+              borderWidth: '2px',
+              borderColor: '#FFFFFF',          
+              background: '#4E19A5', 
+              color: '#FFFFFF',
+              textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+            }}
+          >
+            <p className="font-bold text-lg mb-1">{player.name}</p>
+            <p className="text-sm mb-2">HP: {player.hp}/{player.maxHp}</p>
+            <div className="m-1">
+              <HpBar hp={player.hp} maxHp={player.maxHp} />
+            </div>
           </div>
+        </motion.div>
+
+        <div className="mt-12">
+          <img src="/public/VS.png" alt="VS" />
         </div>
+
+        {/* Enemy */}
+        <motion.div animate={attackAnimation(enemy.name)} className="flex flex-col items-center">
+          <img src={enemy.sprite} alt={enemy.name} className="w-48 mb-2 drop-shadow-xl" />
+          <div
+            className="text-center mt-2 p-3 w-80"
+            style={{
+              borderRadius: '24px',
+              borderWidth: '2px',
+              borderColor: '#FF0000', 
+              background: 'linear-gradient(145deg, #2A1A1A, #1C0F0F)', 
+              color: '#FFFFFF',
+              textShadow: '1px 1px 3px rgba(0,0,0,0.7)',
+            }}
+          >
+            <p className="font-bold text-lg mb-1">{enemy.name}</p>
+            <p className="text-sm mb-2">HP: {enemy.hp}/{enemy.maxHp}</p>
+            <div className="m-1">
+              <HpBar hp={enemy.hp} maxHp={enemy.maxHp} />
+            </div>
+          </div>
+        </motion.div>
       </div>
 
-      {/* Right: Leaderboard */}
-      <div className="w-full sm:w-64 bg-white rounded-2xl shadow-md p-4 h-fit self-start mt-8">
-        <img className="scale-150" src="/public/leader-board.png" alt="" />
-        <h3 className=" m-4 text-lg font-bold mb-3 text-center text-black">🏆 Top Pokémon</h3>
+      {/* Moves */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 w-full max-w-3xl">
+        {player.moves.map((move) => (
+          <button
+            key={move.name}
+            onClick={() => handlePlayerMove(move)}
+            disabled={battleOver}
+            className={` hover:brightness-100 hover:-translate-y-1 w-48 text-white text-lg font-bold transition-all duration-300 ${
+              battleOver
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-pink-500 hover:bg-pink-700"
+            }`}
+            style={{
+              borderColor: '#4EC307',
+              borderRadius: '12px',
+              borderWidth: '2px',
+              backgroundColor: '#67EB00',
+              height: '3rem',
+              boxShadow: '0 2px 2px rgba(0, 0, 0, 0.4)',
+              textShadow: '1px 1px 5px rgba(0,0,0,0.6)',
+            }}
+          >
+            {move.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Reset Battle */}
+      <button
+        onClick={resetBattle}
+        className="hover:brightness-100 hover:-translate-y-1 mt-4 px-5 py-2 rounded-xl font-semibold border-black bg-red-500"
+      >
+        Reset Battle
+      </button>
+
+      {/* Battle Log */}
+      <div className="mt-1 w-full max-w-3xl">
+        <h3 className="text-lg font-semibold mb-2 text-yellow-300">Battle Log</h3>
+        <div className="bg-black p-3 rounded-xl h-48 overflow-auto border shadow-sm text-gray-200">
+          {log.length === 0 ? (
+            <p className="text-gray-400 italic">No moves yet.</p>
+          ) : (
+            log.map((entry, i) => (
+              <p key={i} className="text-sm mb-1">{entry}</p>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+
+    {/* Right: Leaderboard (keep as-is) */}
+    <div className="w-full sm:w-64 relative mt-8">
+      <div className="absolute -top-1 scale-200 left-1/2 transform -translate-x-1/2 z-10">
+        <img className="scale-150" src="/public/leader-board.png" alt="Leaderboard" />
+      </div>
+      <div className="bg-white rounded-2xl shadow-lg p-5 h-fit mt-16">
+        <h3 className="text-[1.5rem] font-bold mb-4 text-center text-purple-800 mt-14">
+          🏆 Top Pokémon
+        </h3>
         {sortedScores.length === 0 ? (
-          <p className="text-center text-gray-500">No scores yet</p>
+          <p className="text-center text-gray-400">No scores yet</p>
         ) : (
-          <ul>
+          <ul className="divide-y divide-gray-200">
             {sortedScores.map(([name, score], i) => (
               <li
                 key={name}
-                className="flex justify-between border-b py-1 text-gray-700"
+                className="flex justify-between py-2 text-gray-700 hover:bg-purple-50 px-3 rounded transition-colors"
               >
-                <span>
-                  {i + 1}. {name}
-                </span>
-                <span className="font-semibold">{score}</span>
+                <span className="font-medium">{i + 1}. {name}</span>
+                <span className="font-semibold text-purple-800">{score}</span>
               </li>
             ))}
           </ul>
         )}
       </div>
     </div>
-  );
+  </div>
+);
 };
 
 export default PokemonBattle2;

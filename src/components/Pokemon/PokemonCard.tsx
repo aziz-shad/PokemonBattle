@@ -59,17 +59,23 @@ const PokemonCard = ({ name, url }: PokemonInput) => {
     }
   };
   return (
-    <div className=" hover:-translate-y-1 hover:scale-[1.02] card w-72 items-center justify-center bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 border border-base-200"
+    <div className=" hover:-translate-y-1 hover:scale-[1.02] card h-100 w-72 items-center justify-center bg-base-100 shadow-lg hover:shadow-2xl transition-all duration-300 border border-base-200"
     style={{
             padding: '1rem',
             margin: '1rem',
             flexDirection: 'column',
             borderRadius: '40px',
-            border: '10px solid #E0BBFF',
+            border: '5px solid #E0BBFF',
             boxShadow: '0 8px 15px rgba(0, 0, 0, 0.3)',
-          
+            height: '23rem',          
           }}>
-      <figure className=" from-base-200 to-base-100 h-48 flex items-center justify-center">
+    
+
+      <div className="card-body text-center p-4">
+        <h2 className="mt-8 card-title text-purple-800 capitalize text-xl font-g font-bold text-primary justify-center">
+          {name}
+        </h2>
+          <figure className=" from-base-200 to-base-100 h-30 flex items-center justify-center">
         {image ? (
           <img
             src={image}
@@ -80,30 +86,43 @@ const PokemonCard = ({ name, url }: PokemonInput) => {
           <div className="skeleton w-24 h-24"></div>
         )}
       </figure>
-
-      <div className="card-body text-center p-4">
-        <h2 className="card-title capitalize text-lg font-bold text-primary justify-center">
-          {name}
-        </h2>
         <h3 className="text-sm text-black">Type: {type}</h3>
 
-        <div className="card-actions flex flex-col gap-2 mt-3">
-          <Link
+        <div className="">
+          <div className="m-3 flex flex-col gap-2">
+             <Link
             to={`/pkdetail/${id}`}
             className="hover:brightness-100 hover:-translate-y-1 btn w-full text-white text-lg font-bold transition-all duration-300"
           style={{
-            backgroundColor: '#D6AFFE',
-            height: '3rem',
-            borderColor: '#A75CF4',
+            backgroundColor: '#FDC0FF',
+            height: '2.5rem',
+            borderColor: '#DA57F0',
             borderRadius: '12px',
             borderWidth: '2px',
             boxShadow: '0 2px 2px rgba(0, 0, 0, 0.4)',
             textShadow: '1px 1px 5px rgba(0,0,0,0.6)',
           }}
         >
-            View details
+            View Details
           </Link>
 
+               <button onClick={addToTeam} 
+          className="hover:brightness-100 hover:-translate-y-1 btn w-full text-white text-lg font-bold transition-all duration-300"
+          style={{
+               borderColor: '#4EC307',
+            borderRadius: '12px',
+            borderWidth: '2px',
+            backgroundColor: '#A6F208',
+            height: '2.5rem',
+            boxShadow: '0 2px 2px rgba(0, 0, 0, 0.4,)',
+            textShadow: '1px 1px 5px rgba(0,0,0,0.6)',
+          }}
+        >
+            Add to Team
+          </button>
+
+          </div>
+         
           <Link
             to={url}
             className="hover:brightness-100 hover:-translate-y-1 btn w-full text-white text-lg font-bold transition-all duration-300"
@@ -112,7 +131,7 @@ const PokemonCard = ({ name, url }: PokemonInput) => {
             borderRadius: '12px',
             borderWidth: '2px',
             backgroundColor: '#A6F208',
-            height: '3rem',
+            height: '2.5rem',
             boxShadow: '0 2px 2px rgba(0, 0, 0, 0.4,)',
             textShadow: '1px 1px 5px rgba(0,0,0,0.6)',
           }}
@@ -120,20 +139,7 @@ const PokemonCard = ({ name, url }: PokemonInput) => {
             View details Url
           </Link>
 
-          <button onClick={addToTeam} 
-          className="hover:brightness-100 hover:-translate-y-1 btn w-full text-white text-lg font-bold transition-all duration-300"
-          style={{
-              borderColor: '#DA57F0',
-            borderRadius: '12px',
-            borderWidth: '2px',
-            backgroundColor: '#FDC0FF',
-            height: '3rem',
-            boxShadow: '0 2px 2px rgba(0, 0, 0, 0.4)',
-            textShadow: '1px 1px 5px rgba(0,0,0,0.6)',
-          }}
-        >
-            Add to Team
-          </button>
+     
         </div>
       </div>
     </div>
